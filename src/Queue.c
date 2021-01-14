@@ -13,31 +13,44 @@ Qnode *createqNode(p_listNode *node) {
     return newNode;
 }
 
-void initQueue(Queue *q) { q->front = q->rear = NULL; }
+void initQueue(Queue *q) { q->front = q->rear = NULL; q->size = 0; }
 
 bool emptyQueue(Queue q) {
-    return (q.front == q.rear) ? true : false;
+    return (q.size == 0) ? true : false;
+}
+
+bool maxFramesReached(Queue q, int frames) {
+    return (q.size >= frames-1) ? true : false;
 }
 
 void enQueue(Queue *q, p_listNode *node) {
     Qnode *newNode = createqNode(node);
 
-    if(emptyQueue(*q)) {
+    if(emptyQueue(*q) == true) {
         q->front = q->rear = newNode;
+        q->size++;
         return ;
     }
 
     q->rear->next = newNode;
     q->rear = newNode;
+    q->size++;
 }
 
-Qnode *deQueue(Queue *q) {
-    if(emptyQueue(*q)) {
+Qnode *getFront(Queue q) {
+    if(emptyQueue(q) == true)
         return NULL;
+
+    return q.front;
+}
+
+void deQueue(Queue *q) {
+    if(emptyQueue(*q)) {
+        return ;
     }
 
     Qnode *prev = q->front;
-    Qnode *toDelete = q->front;
+    
 
     q->front = q->front->next;
 
@@ -45,21 +58,72 @@ Qnode *deQueue(Queue *q) {
     if(q->front == NULL)
         q->rear = NULL;
 
+    // free(prev->pageData);
     free(prev);
+    
+    q->size--;
+}
 
-    return toDelete;
+void updateQueue(Queue *q, p_listNode *node) {
+    if(emptyQueue(*q) == true)
+        return ;
+    
+    Qnode *current = q->front;
+    Qnode *prev = NULL;
+
+    if( (current != NULL) && 
+        (current->pageData->pageNum == node->pageNum) )
+    {
+        q->front = current->next;
+        free(current);
+
+        enQueue(q, node);
+        return;
+    }
+
+    while ( (current) != NULL && 
+            (current->pageData->pageNum != node->pageNum) )
+            // (current->pageData->pid != node->pid)   )
+    {
+        prev = current;
+        current = current->next;
+    }
+
+    if(current == NULL) return;
+
+    //  if(prev != NULL)
+    //     printf("current  = %d node = %d prev = %d count  = %d\n", current->pageData->pageNum, node->pageNum, prev->pageData->pageNum, node->count);
+
+    // delete node
+    if(current->next == NULL)//= current->next;
+    {    
+        current->pageData->count = node->count;
+        // printf(" current->next Einai null \n");
+
+        // prev->next = NULL;
+        // prev->pageData->count = node->count;
+       
+
+        return;
+    } else {
+        prev->next = current->next;
+        free(current);
+    }
+   
+    // insert new node at the end
+    enQueue(q, node);
 }
 
 void printQueue(Queue q) {
     if(emptyQueue(q)) {
-        print("Empty Queue\n");
+        printf("Empty Queue\n");
         return ;
     } 
 
     Qnode *current = q.front;
 
     while(current) {
-        print("Page %d, pid %d, count %d\n", 
+        printf("Page %d, pid %d, count %d\n", 
             current->pageData->pageNum, current->pageData->pid,
             current->pageData->count
             );
@@ -69,19 +133,20 @@ void printQueue(Queue q) {
 }
 
 void deleteQueue(Queue *q) {
-    if(emptyQueue(*q)) {
+    if(emptyQueue(*q) == true) {
         printf("Empty Queue\n");
         return ;
     }
 
     Qnode *current = q->front;
-    Qnode *temp;
+    Qnode *temp = NULL;
 
     while(current) {
         temp = current->next;
+        free(current->pageData);
         free(current); 
 
-        current = current->next;
+        current = temp;
     }
 
     q->front = q->rear = NULL;

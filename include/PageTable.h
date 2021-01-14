@@ -5,6 +5,10 @@
 
 #define MAX_BUCKETS 13
 
+#define PAGE_EXISTS 1
+#define FULL_TABLE 2
+#define PAGE_INSERTED 3
+
 /* data of bucket */
 typedef struct PageListNode{
     int pid;
@@ -50,9 +54,6 @@ p_listNode* createListNode(  int pid,
 // void push(p_listNode** head,p_listNode **end,p_listNode data);
 void push(p_listNode **head,p_listNode **last, p_listNode* data);
 
-void append(p_listNode **head, p_listNode *data);
-p_listNode *deleteHeadNode(p_listNode **head, p_listNode **last);
-
 void printList(p_listNode *head);
 // void append(p_listNode **end, p_listNode data);
 void replaceVictim(HPT *hpt, int indexOfVictim,p_listNode *node);
@@ -72,33 +73,18 @@ void initHPT(   HPT *hpt,
 bool fullTable( int count,
                 int maxFrames );
 
-p_listNode *updatePageNode( HPT *hpt, 
-                            p_listNode* node );
-
-int searchByPage( bucket *hpt, 
-                  unsigned int pageNum 
-                  );
-// void updateReadsAndWrites(pageTable, pos);
-
-int findVictim(HPT hpt, p_listNode *node);
-
 void insertPageHelper(  HPT* pt, 
                         p_listNode* data );
 
-void insertPage( HPT *hpt,
-                 p_listNode* node );
-/*
-int getVictim(  htablePtr pageTable, 
-                int *value );
+int insertHashTable(HPT *hpt,
+                    p_listNode *node);
 
-void updateHPT( htablePtr pageTable, 
-                entryPtr pEntry, 
-                int indexToDelete, 
-                int valueToDelete,
-                int indexToInsert );
-                // unsigned int pageNum, 
-                // char status,int count);
-*/
+int pageExists(HPT hpt, int pageNum);
+
+void updateHashTablePage(HPT *hpt, p_listNode node);
+
+void deleteHashTablePage(HPT *hpt, p_listNode node);
+
 void printStats(HPT hpt);
 
 void deleteHPT(HPT *hpt);
