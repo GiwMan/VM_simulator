@@ -338,6 +338,46 @@ void replaceVictim(HPT *hpt,int indexOfVictim ,p_listNode *node) {
     insertPageHelper(hpt, node);
 }
 
+/**
+ * Find victim for Second chance algorithm
+ */
+int findClockVictim(HPT hpt, p_listNode *node) {
+    int min = (int) INFINITY;
+    int pos = -1;
+    
+    for(int i = 0; i < hpt.size; i++) {
+        p_listNode *temp = hpt.arr[i]->head;
+
+        if(temp != NULL) {
+            min = temp->count;
+            pos = i;
+        }
+        for(int j = i + 1; j < hpt.size; j++) {
+            temp = hpt.arr[j]->head;
+            
+            // traverse the list if needed
+            while( (temp != NULL)  && (temp->secondChance == false)) {
+                if(temp->count < min) {
+                    min = temp->count;
+                    pos = j;
+                }
+            }
+            // if(temp != NULL) {
+            //     if( (temp->secondChance == false) &&  (min > temp->count)) {
+            //         min = temp->count;
+            //         pos = j;
+            //     }
+            // }
+        }
+        // we have found min
+        break;
+    }
+
+    return pos;
+}
+
+
+
 void printList(p_listNode *node) {
     while(node != NULL) {
         printf("    Page \"%d\" %c with count %d and pid : %d ", 

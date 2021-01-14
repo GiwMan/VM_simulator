@@ -7,6 +7,7 @@
 
 
 #include "../include/PageTable.h"
+#include "../include/Queue.h"
 
 #define PAGE_SIZE 4096
 #define MAX_TRACE 50
@@ -51,22 +52,26 @@ int main(int argc, char **argv) {
     HPT hpt_p2; // hashed page table for process_2
     p_listNode *p_node; //  this node is to be inserted in hash tables
 
-    if(strcmp(algorithm,"LRU") != 0 &&
-        strcmp(algorithm,"SEC") != 0) 
-    {
-        printf("Wrong algorithm given!");
-        exit(1);
-    } else {
-        // initialization of hash tables
-        initHPT(&hpt_p1,
-                algorithm, 
-                maxFrames / 2 );
+    Queue q; // struct for LRU implementation
 
-        initHPT(&hpt_p2,
-                algorithm, 
-                maxFrames / 2);
+    if(strcmp(algorithm,"LRU") == 0) {
+        initQueue(&q);
+    } else if(strcmp(algorithm,"SC") == 0) {
+        ;
+    } else {
+        printf("Error. Wrong algorithm given!\n");
+        exit(-1);
     }
-       
+
+    // initialization of hash tables
+    initHPT(&hpt_p1,
+            algorithm, 
+            maxFrames / 2 );
+
+    initHPT(&hpt_p2,
+            algorithm, 
+            maxFrames / 2);
+      
     /**
      * Start reading traces
      */

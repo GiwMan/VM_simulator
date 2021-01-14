@@ -11,6 +11,7 @@ typedef struct PageListNode{
     unsigned int pageNum;
     char status;
     int count;
+    bool secondChance;
     struct PageListNode *next;
 } p_listNode;
 
@@ -33,6 +34,7 @@ typedef struct HashedPageTable {
     int size;
     bucket **arr;
 } HPT;
+
 
 // typedef HPT* htablePtr;
 
@@ -102,5 +104,7 @@ void printStats(HPT hpt);
 void deleteHPT(HPT *hpt);
 
 void deleteBuckets(bucket **b, int size);
+
+int findClockVictim(HPT hpt, p_listNode *node);
 
 #endif
