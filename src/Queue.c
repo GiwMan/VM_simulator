@@ -23,17 +23,30 @@ bool maxFramesReached(Queue q, int frames) {
     return (q.size >= frames-1) ? true : false;
 }
 
-void enQueue(Queue *q, p_listNode *node) {
+void enQueue(Queue *q, p_listNode *node, bool LRU) {
     Qnode *newNode = createqNode(node);
 
-    if(emptyQueue(*q) == true) {
-        q->front = q->rear = newNode;
-        q->size++;
-        return ;
+    if(LRU == true) {
+        if(emptyQueue(*q) == true) {
+            q->front = q->rear = newNode;
+            q->size++;
+            return ;
+        }
+        q->rear->next = newNode;
+        q->rear = newNode;
+    } else {
+        // Second chance circular
+        // queue insertion
+        if(q->front == NULL) 
+            q->front = newNode;
+        else 
+            q->rear->next = newNode;
+
+        q->rear = newNode;
+        q->rear->next = q->front;
     }
 
-    q->rear->next = newNode;
-    q->rear = newNode;
+    
     q->size++;
 }
 
@@ -44,27 +57,50 @@ Qnode *getFront(Queue q) {
     return q.front;
 }
 
-void deQueue(Queue *q) {
-    if(emptyQueue(*q)) {
-        return ;
+void deQueue(Queue *q, bool LRU) {
+
+    if(LRU) {
+        if(emptyQueue(*q)) {
+            return ;
+        }
+
+        Qnode *prev = q->front;
+        
+
+        q->front = q->front->next;
+
+        // empty queue
+        if(q->front == NULL)
+            q->rear = NULL;
+
+        // free(prev->pageData);
+        free(prev);
+    } else {
+
+        if(q->front == NULL) {
+            printf("Empty Queue\n");
+            return ;
+        }
+
+        // if this is the last node
+        if(q->front == q->rear) {
+            free(q->front);
+            q->front = q->rear = NULL;
+        } else {
+            // dequeue in circular linked list
+            Qnode *current = q->front;
+        
+            q->front = q->front->next;
+            q->rear->next = q->front;
+            free(current);
+        }
+
     }
-
-    Qnode *prev = q->front;
-    
-
-    q->front = q->front->next;
-
-    // empty queue
-    if(q->front == NULL)
-        q->rear = NULL;
-
-    // free(prev->pageData);
-    free(prev);
     
     q->size--;
 }
 
-void updateQueue(Queue *q, p_listNode *node) {
+void updateQueue(Queue *q, p_listNode *node, bool LRU) {
     if(emptyQueue(*q) == true)
         return ;
     
@@ -77,7 +113,7 @@ void updateQueue(Queue *q, p_listNode *node) {
         q->front = current->next;
         free(current);
 
-        enQueue(q, node);
+        enQueue(q, node, LRU);
         return;
     }
 
@@ -111,7 +147,7 @@ void updateQueue(Queue *q, p_listNode *node) {
     }
    
     // insert new node at the end
-    enQueue(q, node);
+    enQueue(q, node, LRU);
 }
 
 void printQueue(Queue q) {
