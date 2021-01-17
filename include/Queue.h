@@ -3,10 +3,11 @@
 
 #include <stdbool.h>
 
-#include "./PageTable.h"
+#include "./HashedPageTable.h"
 
 typedef struct Qnode {
-    struct PageListNode *pageData;
+    struct PageListNode *data;
+    // pageInfo *data; 
     struct Qnode *next;
 } Qnode;
 
@@ -23,13 +24,13 @@ bool emptyQueue(Queue q);
 
 bool maxFramesReached(Queue q, int frames);
 
-void enQueue(Queue *q, p_listNode *node, bool LRU);
+p_listNode *enQueue(Queue *q, unsigned int page, int pid, char mode, int count);
 
 Qnode *getFront(Queue q);
 
-void deQueue(Queue *q, bool LRU);
+void deQueue(Queue *q);
 
-void updateQueue(Queue *q, p_listNode *node, bool LRU);
+void updateQueue(Queue *q, unsigned int page, int pid, char mode, int count);
 
 void printQueue(Queue q);
 

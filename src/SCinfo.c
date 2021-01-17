@@ -5,27 +5,42 @@
 
 #include "../include/SCinfo.h"
 
-void createSCinfo(SCinfo *scinfo, unsigned int page, int pid, char mode) {
-    scinfo->pageNum = page;
-    scinfo->pid = pid;
-    scinfo->status = mode;
+void createSCinfo(SCinfo *scinfo, pageInfo *data) {
+    scinfo->pageData = data;
     scinfo->bitRef = 0;
 }
 
-int searchByPage(SCinfo **scinfoArr, SCinfo scinfo, int size) {
+int getPage(SCinfo *pageArr, int page, int size) {
+
     for(int i = 0; i < size; i++) {
-        
-        if(scinfoArr[i]) {
-            if(scinfoArr[i]->pageNum == scinfo.pageNum && 
-                scinfoArr[i]->pid == scinfo.pid )
-            {
+
+        if(pageArr[i].pageData != NULL) {
+            if(pageArr[i].pageData->pageNum == page) {
                 return i;
-            }    
+            }
         }
     }
 
     return -1;
 }
+
+
+// int searchByPage(SCinfo **scinfoArr, SCinfo scinfo, int size) {
+//     for(int i = 0; i < size; i++) {
+        
+//         if(scinfoArr[i]) {
+//             if(scinfoArr[i]->pageNum == scinfo.pageNum && 
+//                 scinfoArr[i]->pid == scinfo.pid )
+//             {
+//                 return i;
+//             }    
+//         }
+//     }
+
+//     return -1;
+// }
+
+/*
 
 void SC_simulation(HPT *h1, HPT *h2, int maxFrames,int q, int maxTraces) {
     bool change = false;
@@ -132,5 +147,4 @@ void SC_simulation(HPT *h1, HPT *h2, int maxFrames,int q, int maxTraces) {
     }
 
 }
-
-
+*/
