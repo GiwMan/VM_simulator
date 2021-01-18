@@ -129,10 +129,10 @@ void updateHashTablePage(HPT *hpt, unsigned int page, char status, int count) {
         {
             list->count = count;
 
-            if(status == 'W')
-                hpt->nWrites++;
-            else 
-                hpt->nReads++;
+            // if(status == 'W')
+            //     hpt->nWrites++;
+            // else 
+            //     hpt->nReads++;
 
             return ;
         }
