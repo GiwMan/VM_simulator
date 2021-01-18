@@ -18,13 +18,7 @@ PageInfo.c: ./src/PageInfo.c ./include/PageInfo.h
 SCinfo.c: ./src/SCinfo.c ./include/SCinfo.h ./include/PageInfo
 		cc -Wall -g -c ./src/SCinfo.c ./src/PageInfo.c
 
-
-# mem_sim: 
-# 	gcc -Wall -g ./src/main2.c ./src/HashedPageTable.c ./src/PageInfo.c ./src/Queue.c -o ./build/mem_sim
-
-# Queue.o: 
-
 clean:
-	rm -rf ./build/mem_sim ./src/*.o
+	rm -rf ./src/*.o
 
 
