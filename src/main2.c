@@ -172,7 +172,8 @@ void LRUsimulation(char *algorithm, int maxFrames, int q, int maxTraces) {
     // start reading traces and inserting pages
     // into hash tables and LRU structure
     int totalFrames = 0;
-    while(count < MAX_TRACE) {
+    printf("max trace  = %d\n", maxTraces);
+    while(count < maxTraces) {
 
         if(!change) {
             trace_file = trace_file1;
@@ -495,13 +496,18 @@ int main(int argc, char **argv) {
     int maxFrames = atoi(argv[2]);
     int quantum = atoi(argv[3]);
     int maxTrace;
+    
+    printf("argc = %d\n", argc);
 
     if(argc < 4 || argc > 5) {
         printf("Usage of: %s <algorithm> <mem_size> <quantum> <max_ref>\n", argv[0]);
         exit(1);
     } else if(argc == 5) {
+    printf("mpike");
         maxTrace = atoi(argv[4]);
+        printf("maxTrace = %d\n", maxTrace);
     } else if(argc == 4){
+    printf("mpike edw!");
         maxTrace = MAX_TRACE;
     } 
 
